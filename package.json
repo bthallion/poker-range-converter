@@ -1,0 +1,19 @@
+{
+  "name": "flopzilla-range-exporter",
+  "version": "1.0.0",
+  "description": "flopzilla range exporter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bthallion/flopzilla-range-exporter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bthallion/flopzilla-range-exporter/issues"
+  },
+  "homepage": "https://github.com/bthallion/flopzilla-range-exporter#readme"
+}

@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/bthallion/flopzilla-range-exporter/issues"
   },
-  "homepage": "https://github.com/bthallion/flopzilla-range-exporter#readme"
+  "homepage": "https://github.com/bthallion/flopzilla-range-exporter#readme",
+  "dependencies": {
+    "clipboardy": "^4.0.0",
+    "minimist": "^1.2.8"
+  }
 }

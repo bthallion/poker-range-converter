@@ -14,7 +14,7 @@ Convert the newdefs2 file from Flopzilla 1 to a text block of range strings, use
 --category: A filter for top level categories in case you don't want all your ranges
 	copied to the clipboard. Checks if a category contains the substring provided.
 
-ex: `node index.js --category="Bens Ranges"`
+ex: `node index.js --category="Upswing Ranges"`
 
 
 ### Example Output: 

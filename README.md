@@ -44,3 +44,4 @@ Hand Range #7[BTN RFI]:
 ### Limitations
 - Does not handle percentage weights, as PokerCruncher for Android doesn't either. I tend to define
   partial combos using suits instead of percentage weights for this reason.
+- Assumes you've installed Flopzilla on a windows machine in the normal location, easy enough to change locally

@@ -18,7 +18,7 @@ ex: `node index.js --category="Bens Ranges"`
 
 
 ### Example Output: 
-`
+```
 Hand Range #1[EP1 RFI]:
 {88+, 7h7s, 7c7h, 7c7s, 7d7h, 7d7s, ATs+, A5s, AQo+, KTs+, KsQh, KhQc, KsQc, KhQd, KsQd, KhQs, QJs, QhTh, QsTs, JTs}
 
@@ -39,4 +39,4 @@ Hand Range #6[CO RFI]:
 
 Hand Range #7[BTN RFI]:
 {22+, A2s+, A5o+, K2s+, K7o+, Q4s+, Q9o+, J5s+, J9o+, T7s+, T9o, 97s+, 86s+, 75s+, 65s, 54s}
-`
+```

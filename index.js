@@ -227,7 +227,7 @@ function outputListOfRangesToClipboard(rangeList, topCategoryFilter) {
         const range = rangeAndPath[length - 1];
         const rangeName = rangeAndPath[length - 2];
         const categoryName = rangeAndPath[length - 3];
-        output = output + '\n\n' + `Hand Range #${i}[${rangeName} ${categoryName}]:`
+        output = output + '\n\n' + `Hand Range #${i + 1}[${rangeName} ${categoryName}]:`
             + '\n' + `{${range}}`;
     }
     output = output + '\n';

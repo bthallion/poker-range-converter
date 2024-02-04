@@ -221,14 +221,13 @@ function outputListOfRangesToClipboard(rangeList, topCategoryFilter) {
     let output = '';
     const filteredRangeList = rangeList.filter((range) => range[0].includes(topCategoryFilter));
     for (let i = 0; i < filteredRangeList.length; i++) {
-
         const rangeAndPath = filteredRangeList[i];
         const length = rangeAndPath.length;
         const range = rangeAndPath[length - 1];
         const rangeName = rangeAndPath[length - 2];
         const categoryName = rangeAndPath[length - 3];
-        output = output + '\n\n' + `Hand Range #${i + 1}[${rangeName} ${categoryName}]:`
-            + '\n' + `{${range}}`;
+        output = output + `Hand Range #${i + 1}[${rangeName} ${categoryName}]:`
+            + '\n' + `{${range}}` + '\n\n';
     }
     output = output + '\n';
     clipboardy.writeSync(output);

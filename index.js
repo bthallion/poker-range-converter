@@ -229,7 +229,6 @@ function outputListOfRangesToClipboard(rangeList, topCategoryFilter) {
         output = output + `Hand Range #${i + 1}[${rangeName} ${categoryName}]:`
             + '\n' + `{${range}}` + '\n\n';
     }
-    output = output + '\n';
     clipboardy.writeSync(output);
 }
 

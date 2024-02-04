@@ -40,3 +40,7 @@ Hand Range #6[CO RFI]:
 Hand Range #7[BTN RFI]:
 {22+, A2s+, A5o+, K2s+, K7o+, Q4s+, Q9o+, J5s+, J9o+, T7s+, T9o, 97s+, 86s+, 75s+, 65s, 54s}
 ```
+
+### Limitations
+- Does not handle percentage weights, as PokerCruncher for Android doesn't either. I tend to define
+  partial combos using suits instead of percentage weights for this reason.

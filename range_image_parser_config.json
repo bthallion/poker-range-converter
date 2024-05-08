@@ -1,0 +1,52 @@
+{
+	"directory": "C:\\Users\\bthal\\poker\\redchip_ranges\\9max",
+	"gridDimensions": {
+		"gridSize": 470,
+		"topLeft": [42, 18],
+		"cellSize": 35,
+		"sampleOffset": 5
+	},
+	"colorDefinitions": [
+		[[215, 53, 51], "red"],
+		[[251, 209, 73], "yellow"],
+		[[102, 153, 204], "blue"]
+	],
+	"useSuitsForPartialCombos": true,
+	"filePatterns": {
+		"live-rfi": {
+			"raise": [
+				{"weight": 1, "color": "red"},
+				{"weight": 0.5, "color": "yellow"}
+			]
+		},
+		"live-4bet": {
+			"raise": [
+				{"weight": 1, "color": "red"},
+				{"weight": 0.5, "color": "yellow"}
+			],
+			"call": [
+				{"weight": 1, "color": "blue"},
+				{"weight": 0.5, "color": "yellow"}
+			]
+		},
+		"iso-or-limp-live": {
+			"raise": [
+				{"weight": 1, "color": "red"},
+				{"weight": 0.5, "color": "yellow"}
+			],
+			"call": [
+				{"weight": 0.5, "color": "blue"}
+			]
+		},
+		"3bet-or-call-live": {
+			"raise": [
+				{"weight": 1, "color": "red"},
+				{"weight": 0.5, "color": "yellow"}
+			],
+			"call": [
+				{"weight": 1, "color": "blue"},
+				{"weight": 0.5, "color": "yellow"}
+			]
+		}
+	}
+}

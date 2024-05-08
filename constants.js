@@ -1,4 +1,6 @@
-export const newDefsPath = `C:\\Program Files (x86)\\Flopzilla\\Flopzilla\\newdefs2.txt`;
+export const defaultDefs2Path = `C:\\Program Files (x86)\\Flopzilla\\Flopzilla\\newdefs2.txt`;
+export const defaultDefs3Path = `C:\\Program Files (x86)\\FlopzillaPro\\FlopzillaPro\\config\\newdefs3.txt`;
+export const defaultImageConfigPath = './range_image_parser_config.json';
 
 export const hands = [
     'AA','AKs','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s',
@@ -48,6 +50,17 @@ export const handGroups = {
     },
 }
 
+export const unsuitedGroups = Object.values(handGroups.unsuited);
+
+export const rangeStringOrderedGroups = [
+    handGroups.pockets,
+    ...Object.values(handGroups.suited).reduce((acc, suitedGroup, index) => {
+        acc.push(suitedGroup);
+        acc.push(unsuitedGroups[index]);
+        return acc;
+    }, []),
+];
+
 export const suitCombos = [
     'hh', 'ch', 'dh', 'sh',
     'hc', 'cc', 'dc', 'sc',
@@ -56,3 +69,29 @@ export const suitCombos = [
 ];
 
 export const sameSuits = ['hh', 'cc', 'dd', 'ss'];
+
+// The equivalent of .5 weighting for non-pocket pair hands
+// the first card is a spade or heart
+export const halfWeightRaiseCombos = [
+    'hh', 'hc', 'hd', 'hs',
+    'sh', 'sc', 'sd', 'ss'
+];
+
+// The equivalent of .5 weighting for pocket pair hands
+// combos including a spade
+export const halfWeightPocketRaiseCombos = [
+    'sh', 'sc', 'sd'
+];
+
+// The equivalent of .5 weighting for non-pocket pair hands
+// the first card is a club or diamond
+export const halfWeightCallCombos = [
+    'ch', 'cc', 'cd', 'cs', 
+    'dh', 'dc', 'dd', 'ds'
+];
+
+// The equivalent of .5 weighting for pocket pair hands
+// combos not including a spade
+export const halfWeightPocketCallCombos = [
+    'hc', 'hd', 'cd'
+];

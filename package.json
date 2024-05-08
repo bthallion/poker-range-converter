@@ -4,6 +4,9 @@
   "description": "flopzilla range exporter",
   "main": "index.js",
   "scripts": {
+    "parse-newdefs2": "node index.js --parse_newdefs2",
+    "parse-newdefs3": "node index.js --parse_newdefs3",
+    "parse-range-images": "node index.js --parse_range_images",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
@@ -19,6 +22,8 @@
   "homepage": "https://github.com/bthallion/flopzilla-range-exporter#readme",
   "dependencies": {
     "clipboardy": "^4.0.0",
+    "get-pixels": "^3.3.3",
+    "load-json-file": "^7.0.1",
     "minimist": "^1.2.8"
   }
 }

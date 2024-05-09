@@ -1,14 +1,18 @@
 import * as fs from 'fs/promises';
-import {hands, handGroups, suitCombos, sameSuits, newDefsPath, rangeStringOrderedGroups} from './constants.js';
+import {hands, handGroups, suitCombos, sameSuits, rangeStringOrderedGroups} from './constants.js';
 import clipboardy from 'clipboardy';
 import minimist from 'minimist';
-import {getRangeString} from './range_string_utils';
+import {getRangeString} from './range_string_utils.js';
 
 export function parseNewDefs3(rawText) {
-	const chunks = rawText.split('\x01').join('').split('ð?Ô').filter((str) => str !== '                ');
+	const chunks = rawText
+		.split('\x00').join(' ')
+		.split('\x01').join('')
+		.split('ð?Ô').filter((str) => str !== '                ');
 	const flatRanges = chunks
 		.map((chunk) => chunk.split(/\s\s+/g).join('').split('eÿþÿ').slice(1))
 		.filter((range) => range.length > 0)
+		debugger;
 	return buildRangeList(flatRanges);
 }
 
@@ -22,6 +26,7 @@ function buildRangeList(flatRanges) {
 		// A new category is found, go to the parent of the currentNode. Is this always correct?
 		// what if we have more than 2 levels of nesting
 		if (flatRange.length > 2) {
+			currentPath.pop();
 			let parent = currentNode.parent;
 			delete currentNode.parent;
 			currentNode = parent;
@@ -36,6 +41,7 @@ function buildRangeList(flatRanges) {
 				.push(categoryNamePieces.pop()[0])
 			categoryName = categoryNamePieces.join('')
 				.split('@@@@bentoken@@@@').join(' ')
+			currentPath.push(categoryName);
 			const newNode = {
 				parent: currentNode,
 			};
@@ -52,17 +58,19 @@ function buildRangeList(flatRanges) {
 		let rangePieces = range.split(' ');
 		const firstPiece = rangePieces.shift();
 		rangePieces.unshift(firstPiece[firstPiece.length - 1]);
-		range = rangePieces.join(' ');
-		currentNode[rangeName] = range
-			.slice(0, range.length - 1)
+		range = rangePieces
+			.join(' ')
 			.replace(/(\S)(\S)/g, '$1@@@@bentoken@@@@$2')
 			.split(' ').join('')
 			.split('@@@@bentoken@@@@').join(' ');
+		currentNode[rangeName] = range;
+		allRanges.push([...currentPath, rangeName, range]);
 	}
 	while (currentNode.parent) {
+		currentPath.pop();
 		let parent = currentNode.parent;
 		delete currentNode.parent;
 		currentNode = parent;
 	}
-	return currentNode;
+	return allRanges;
 }

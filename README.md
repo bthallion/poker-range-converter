@@ -1,7 +1,5 @@
 # Poker Ranges Parser
 
-A fes
-
 Parse the newdefs2 file from Flopzilla 1, newdefs3 from FlopzillaPro, or a directory of range images from e.g. Red Chip or where ever to a text block of range strings, useful for batch importing into PokerCruncher on Android. This way you only need to define your ranges in a single place, and can relatively easily port them to a mobile device for reference at the table.
 
 ## Installation
@@ -57,3 +55,4 @@ Hand Range #7[BTN RFI]:
 - Does not handle percentage weights, as PokerCruncher for Android doesn't either. I tend to define
   partial combos using suits instead of percentage weights for this reason.
 - Assumes you've installed Flopzilla on a windows machine in the normal location, easy enough to change locally
+- The newdefs3 parser is very experimental, it expects ranges to be nested in no more than 2 categories deep

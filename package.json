@@ -4,9 +4,9 @@
   "description": "flopzilla range exporter",
   "main": "index.js",
   "scripts": {
-    "parse-newdefs2": "node index.js --parse_newdefs2",
-    "parse-newdefs3": "node index.js --parse_newdefs3",
-    "parse-range-images": "node index.js --parse_range_images",
+    "parse-newdefs2": "node index.js --parse-newdefs2",
+    "parse-newdefs3": "node index.js --parse-newdefs3",
+    "parse-range-images": "node index.js --parse-range-images",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",

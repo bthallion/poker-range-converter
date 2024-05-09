@@ -1,8 +1,8 @@
 import * as fs from 'fs/promises';
-import {hands, handGroups, suitCombos, sameSuits, newDefsPath, rangeStringOrderedGroups} from './constants.js';
+import {hands, handGroups, suitCombos, sameSuits, rangeStringOrderedGroups} from './constants.js';
 import clipboardy from 'clipboardy';
 import minimist from 'minimist';
-import {getRangeString} from './range_string_utils';
+import {getRangeString} from './range_string_utils.js';
 
 export function parseNewDefs2(rawText) {
     const textLines = rawText.split('\r\n');

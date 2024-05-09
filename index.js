@@ -11,14 +11,13 @@ import {
 } from './constants.js';
 import clipboardy from 'clipboardy';
 import minimist from 'minimist';
-import {getRangeString} from './range_string_utils';
 import {parseNewDefs2} from './newdefs2_parser.js';
 import {parseNewDefs3} from './newdefs3_parser.js';
 import {parseRangeImages} from './range_image_parser.js';
 
 async function readFile(filePath) {
   try {
-    return fs.readFile(filePath, { encoding: 'utf8' });
+    return fs.readFile(filePath, { encoding: 'binary' });
   } catch (err) {
     throw new Error(err);
   }
@@ -79,7 +78,7 @@ async function outputRangesToDir(rangeStringsMap) {
         const rangeList = parseNewDefs2(rawText);
         outputListOfRangesToClipboard(rangeList, args.category);
     } else if (args['parse-newdefs3']) {
-        const rawText = await readFile(defaultDefs2Path)
+        const rawText = await readFile(defaultDefs3Path)
         const rangeList = parseNewDefs3(rawText);
         outputListOfRangesToClipboard(rangeList, args.category);
     } else if (args['parse-range-images']) {

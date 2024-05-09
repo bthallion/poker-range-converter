@@ -13,12 +13,6 @@ export async function parseRangeImages(configPath) {
 	return processRangeImages(imagePaths, config);
 }
 
-export async function parseRangeImages(configPath) {
-	const [config] = await loadJsonFile(configPath);
-	const imagePaths = await readImageFilePaths(config.directory);
-	const rangeStringsMap = await processRangeImages(imagePaths, config);
-}
-
 // todo: use a more flexible image parsing library:
 //https://github.com/donmccurdy/ndarray-pixels
 

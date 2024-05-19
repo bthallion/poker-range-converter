@@ -23,10 +23,10 @@ Output formats:
 
 ### Arguments
 
---from: The format of poker ranges to convert from - one of the following values:
+--from: The input format of poker ranges to convert from - one of the following values:
 `newdefs2`, `newdefs3`, `images`
 
---to: The output medium, either copied as a textblock to your clipboard, or each range string is written to an individual file in a directory - one of the following values:
+--to: The output format, either copied as a textblock to your clipboard, or each range string is written to an individual file in a directory - one of the following values:
 `clipboard`, `files`
 
 --category: A filter for top level categories when converting from newdefs. Checks if the top category contains the filter as a substring.

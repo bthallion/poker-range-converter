@@ -1,25 +1,22 @@
 {
-  "name": "flopzilla-range-exporter",
-  "version": "1.0.0",
-  "description": "flopzilla range exporter",
+  "name": "poker-range-converter",
+  "version": "0.1.0",
+  "description": "poker-range-converter",
   "main": "index.js",
   "scripts": {
-    "parse-newdefs2": "node index.js --parse-newdefs2",
-    "parse-newdefs3": "node index.js --parse-newdefs3",
-    "parse-range-images": "node index.js --parse-range-images",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "convert": "node index.js"
   },
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bthallion/flopzilla-range-exporter.git"
+    "url": "git+https://github.com/bthallion/poker-range-converter.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bthallion/flopzilla-range-exporter/issues"
+    "url": "https://github.com/bthallion/poker-range-converter/issues"
   },
-  "homepage": "https://github.com/bthallion/flopzilla-range-exporter#readme",
+  "homepage": "https://github.com/bthallion/poker-range-converter#readme",
   "dependencies": {
     "clipboardy": "^4.0.0",
     "get-pixels": "^3.3.3",

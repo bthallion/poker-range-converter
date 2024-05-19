@@ -2,14 +2,14 @@
 // and given information about what each color means, generate
 // poker ranges.
 import {loadJsonFile} from 'load-json-file';
-import {getHalfWeightSuitsForAction, getRangeString} from './range_string_utils.js';
+import {getHalfWeightSuitsForAction, getRangeString} from '../utils/range_string_utils.js';
 import getPixels from 'get-pixels';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
 export async function parseRangeImages(configPath) {
-	const [config] = await loadJsonFile(configPath);
-	const imagePaths = await readImageFilePaths(config.directory);
+	const config = await loadJsonFile(configPath);
+	const imagePaths = await readImageFilePaths(config.srcDir);
 	return processRangeImages(imagePaths, config);
 }
 
@@ -124,5 +124,7 @@ async function processRangeImages(imagePaths, config) {
 		}
 	}
 
-	return rangeStringsMap;
+	return Object.entries(rangeStringsMap).map(([key, value]) => {
+		return [key, value];
+	});
 }

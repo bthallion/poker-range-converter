@@ -1,8 +1,8 @@
 import * as fs from 'fs/promises';
-import {hands, handGroups, suitCombos, sameSuits, rangeStringOrderedGroups} from './constants.js';
+import {hands, handGroups, suitCombos, sameSuits, rangeStringOrderedGroups} from '../constants.js';
 import clipboardy from 'clipboardy';
 import minimist from 'minimist';
-import {getRangeString} from './range_string_utils.js';
+import {getRangeString} from '../utils/range_string_utils.js';
 
 export function parseNewDefs3(rawText) {
 	const chunks = rawText
@@ -11,8 +11,7 @@ export function parseNewDefs3(rawText) {
 		.split('ð?Ô').filter((str) => str !== '                ');
 	const flatRanges = chunks
 		.map((chunk) => chunk.split(/\s\s+/g).join('').split('eÿþÿ').slice(1))
-		.filter((range) => range.length > 0)
-		debugger;
+		.filter((range) => range.length > 0);
 	return buildRangeList(flatRanges);
 }
 

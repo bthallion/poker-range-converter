@@ -5,15 +5,16 @@ import {
     suitCombos, 
     sameSuits, 
     defaultDefs2Path, 
-    defaultDefs3Path, 
-    defaultImageConfigPath, 
+    defaultDefs3Path,
+    defaultImageConfigPath,
     rangeStringOrderedGroups
 } from './constants.js';
 import clipboardy from 'clipboardy';
 import minimist from 'minimist';
-import {parseNewDefs2} from './newdefs2_parser.js';
-import {parseNewDefs3} from './newdefs3_parser.js';
-import {parseRangeImages} from './range_image_parser.js';
+import {parseNewDefs2} from './parsers/newdefs2_parser.js';
+import {parseNewDefs3} from './parsers/newdefs3_parser.js';
+import {parseRangeImages} from './parsers/range_image_parser.js';
+import * as path from 'path';
 
 async function readFile(filePath) {
   try {
@@ -43,7 +44,7 @@ ex:
 
 {HJ/CO 4bet IP} {vs. BTN 3bet}
 */
-function outputListOfRangesToClipboard(rangeList, topCategoryFilter = '') {
+function outputRangesToClipboard(rangeList, topCategoryFilter = '') {
     let output = '';
     const filteredRangeList = rangeList.filter((range) => range[0].includes(topCategoryFilter));
     for (let i = 0; i < filteredRangeList.length; i++) {
@@ -62,29 +63,63 @@ function outputListOfRangesToClipboard(rangeList, topCategoryFilter = '') {
  * Write ranges to new directory, with each range in its own txt file. This can be imported into Flopzilla 2, and a nested
  * directory structure can be used to represent categories.
  */
-async function outputRangesToDir(rangeStringsMap) {
+async function outputRangesToDir(rangeList, topCategoryFilter= '') {
     await fs.rm('output', {recursive: true, force: true});
     await fs.mkdir('output');
-    for (const [pathName, rangeString] of Object.entries(rangeStringsMap)) {
+    for (const [pathName, rangeString] of rangeList) {
         const filename = path.basename(pathName);
         await fs.writeFile(new URL(path.join('output', filename+'.txt'), import.meta.url), rangeString);
     }
 }
 
+async function getNewDefs2Ranges(src) {
+    const source = src ?? defaultDefs2Path;
+    const rawText = await readFile(source)
+    return parseNewDefs2(rawText);
+}
+
+async function getNewDefs3Ranges(src) {
+    const source = src ?? defaultDefs3Path;
+    const rawText = await readFile(source)
+    return parseNewDefs3(rawText);
+}
+
+async function getImagesRanges(src) {
+    const configSrc = src ?? defaultImageConfigPath;
+    return parseRangeImages(configSrc);
+}
+
 (async function main() {
     const args = minimist(process.argv.slice(2));
-    if (args['parse-newdefs2']) {
-        const rawText = await readFile(defaultDefs2Path)
-        const rangeList = parseNewDefs2(rawText);
-        outputListOfRangesToClipboard(rangeList, args.category);
-    } else if (args['parse-newdefs3']) {
-        const rawText = await readFile(defaultDefs3Path)
-        const rangeList = parseNewDefs3(rawText);
-        outputListOfRangesToClipboard(rangeList, args.category);
-    } else if (args['parse-range-images']) {
-        const rangeStringsMap = await parseRangeImages(defaultImageConfigPath);
-        outputRangesToDir(rangeStringsMap);
-    } else {
-        throw new Error('No parsing strategy selected.')
+    const {
+        from,
+        to,
+        src,
+        category,
+    } = args;
+
+    let rangeList;
+
+    switch (from) {
+        case 'newdefs2':
+            rangeList = await getNewDefs2Ranges(src);
+            break;
+        case 'newdefs3':
+            rangeList = await getNewDefs3Ranges(src);
+            break;
+        case 'images':
+            rangeList = await getImagesRanges(src);
+            break;
+        default:
+            throw new Error('No `from` range format argument was provided.'); 
+    }
+
+    switch (to) {
+        case 'files':
+            outputRangesToDir(rangeList);
+            break;
+        case 'clipboard':
+        default:
+            outputRangesToClipboard(rangeList, category);
     }
 })();

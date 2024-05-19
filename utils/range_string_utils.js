@@ -8,7 +8,7 @@ import {
     suitCombos,
     sameSuits,
     rangeStringOrderedGroups
-} from './constants.js';
+} from '../constants.js';
 
 export function getRangeString(rangeFlags, suitCombos) {
     const allHands = rangeStringOrderedGroups

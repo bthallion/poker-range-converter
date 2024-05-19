@@ -1,6 +1,15 @@
-# Poker Ranges Parser
+# Poker Range Converter
 
-Parse the newdefs2 file from Flopzilla 1, newdefs3 from FlopzillaPro, or a directory of range images from e.g. Red Chip or where ever to a text block of range strings, useful for batch importing into PokerCruncher on Android. This way you only need to define your ranges in a single place, and can relatively easily port them to a mobile device for reference at the table.
+Convert common poker range formats to range strings, for importing and exporting between NLHE study tools.
+
+Supported input formats include:
+  - JPG, GIF or PNG color coded images of ranges
+  - Flopzilla 1.x.x newdefs2 files
+  - FlopzillaPro 2.x.x newdefs3 files
+
+Output formats:
+  - A text block of named ranges copied to the clipboard, formatted for import into PokerCruncher on Android OS
+  - A directory of files for each range string, which can be imported into FlopzillaPro
 
 ## Installation
 
@@ -8,23 +17,27 @@ Parse the newdefs2 file from Flopzilla 1, newdefs3 from FlopzillaPro, or a direc
 
 ## Usage
 
-- Run `npm run parse-newdefs2` and your Flopzilla 1.x.x ranges will be copied into your clipboard
-- Run `npm run parse-newdefs3` and your Flopzilla 2.x.x ranges will be copied into your clipboard
-- Run `npm run parse-range-images` and a using the configuration in `range_image_parser_config.json` a directory of JPG, GIF or PNG
-  range chart images will be parsed and copied into your clipboard
+- Run `npm run convert -- --from=newdefs2 --to=clipboard` and your Flopzilla 1.x.x ranges will be copied into your clipboard
+- Run `npm run convert -- --from=newdefs3 --to=clipboard` and your Flopzilla 2.x.x ranges will be copied into your clipboard
+- Run `npm run convert -- --from=images --to=files --src=/path/to/config.json` and using the provided configuration a directory of JPG, GIF or PNG range chart images will be parsed and written to the output directory
 
 ### Arguments
 
---category: A filter for top level categories in case you don't want all your ranges
-	copied to the clipboard. Checks if a category contains the substring provided.
+--from: The format of poker ranges to convert from - one of the following values:
+`newdefs2`, `newdefs3`, `images`
 
-	ex: `npm run parse-newdefs2 -- --category="Upswing Ranges"`
+--to: The output medium, either copied as a textblock to your clipboard, or each range string is written to an individual file in a directory - one of the following values:
+`clipboard`, `files`
+
+--category: A filter for top level categories when converting from newdefs. Checks if the top category contains the filter as a substring.
+
+	ex: `npm run convert -- --from=newdefs2 --category="Upswing Ranges"`
 
 --output_directory: Specify a directory to write the parsed ranges into rather than copying them to your clipboard, each range
   is written to its own file. This directory is importable by FlopzillaPro, and can further by organized into categories
   using subdirectory folders.
 
-  ex: `npm run parse-range-images -- --output_directory="./output"`
+  ex: `npm run convert -- --from=images --to=files`
 
 
 ### Example Output: 

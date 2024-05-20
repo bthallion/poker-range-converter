@@ -10,10 +10,19 @@ import {
     rangeStringOrderedGroups
 } from '../constants.js';
 
-export function getRangeString(rangeFlags, suitCombos) {
-    const allHands = rangeStringOrderedGroups
-        .map((group) => buildHandGroup(rangeFlags, group, suitCombos));
-    return allHands.flat().join(', ');
+export function getRangeString(rangeFlagMap, suitCombos) {
+    const weightGroups = [];
+    for (const [weight, rangeFlags] of Object.entries(rangeFlagMap)) {
+        const weightPer = Math.floor(weight * 100);
+        const allHands = rangeStringOrderedGroups
+            .map((group) => buildHandGroup(rangeFlags, group, suitCombos));
+        if (weightPer === 100) {
+            weightGroups.push(allHands.flat().join(', '));
+        } else {
+            weightGroups.push(`[${weightPer}]${allHands.flat().join(', ')}[/${weightPer}]`);
+        }
+    }
+    return weightGroups.join(', ');
 }
 
 /**
@@ -78,15 +87,18 @@ export function buildHandGroup(rangeFlags, groupIndices, suitOptions) {
             startHand = null
             endHand = null;
         }
-        if (rangeFlags[index] && suits) {
-            const suitedHands = getSuitedHands(index, suits);
-            allHands = allHands.concat(suitedHands);
-        } else if (rangeFlags[index]) {
-            if (continuousFromTop) {
-                fromHandAndUp = hand;
-            } else {
-                if (!startHand) startHand = hand;
-                endHand = hand;
+        if (rangeFlags[index]) {
+            if (suits) {
+                const suitedHands = getSuitedHands(index, suits);
+                allHands = allHands.concat(suitedHands);
+            }
+            else {
+                if (continuousFromTop) {
+                    fromHandAndUp = hand;
+                } else {
+                    if (!startHand) startHand = hand;
+                    endHand = hand;
+                }
             }
         }
     }

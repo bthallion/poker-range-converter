@@ -1,0 +1,27 @@
+{
+	"srcDir": "C:\\Users\\bthal\\poker\\hungry_horse_ranges\\live 9max 200bb",
+	"gridDimensions": {
+		"gridWidth": 640,
+		"gridHeight": 495,
+		"topLeft": [7, 5],
+		"cellWidth": 46,
+		"cellHeight": 36,
+		"sampleOffset": 2
+	},
+	"colorDefinitions": [
+		[[117, 28, 30], "red"],
+		[[84, 134, 63], "green"]
+	],
+	"useSuitsForPartialCombos": false,
+	"verticalSplitCells": true,
+	"filePatterns": {
+		"": {
+			"raise": [
+				{"weight": 1, "color": "red"}
+			],
+			"call": [
+				{"weight": 1, "color": "green"}
+			]
+		}
+	}
+}

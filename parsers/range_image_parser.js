@@ -41,48 +41,83 @@ function readImagePixels(imagePath) {
  */
 function doesCellMatchLegend(cellColor, colorName, colorDefinitions) {
 	const [legendColor] = colorDefinitions.find(([_, name]) => name === colorName);
-	const rDiff = Math.abs(legendColor[0] - cellColor[0]);
-	const gDiff = Math.abs(legendColor[1] - cellColor[1]);
-	const bDiff = Math.abs(legendColor[2] - cellColor[2]);
+	return areColorsEquivalent(cellColor, legendColor);
+}
+
+function areColorsEquivalent(colorA, colorB) {
+	const rDiff = Math.abs(colorA[0] - colorB[0]);
+	const gDiff = Math.abs(colorA[1] - colorB[1]);
+	const bDiff = Math.abs(colorA[2] - colorB[2]);
 	return rDiff <= 40 && gDiff <= 40 && bDiff <= 40;
 }
 
 function getCellColors(image, config) {
-	const {topLeft, cellSize, gridSize, sampleOffset} = config.gridDimensions;
-	const gridLineSize = (gridSize - (cellSize * 13)) / 12;
+	const {
+		topLeft, 
+		cellWidth,
+		cellHeight, 
+		gridWidth,
+		gridHeight, 
+		sampleOffset
+	} = config.gridDimensions;
+	const {verticalSplitCells} = config;
+	const xGridLineSize = (gridWidth - (cellWidth * 13)) / 12;
+	const yGridLineSize = (gridHeight - (cellHeight * 13)) / 12;
 	const cells = [];
 	for (let i = 0; i < 13; i++) {
 		for (let j = 0; j < 13; j++) {
-			const x = Math.round(topLeft[0] + (j * cellSize) + (gridLineSize * j) + sampleOffset);
-			const y = Math.round(topLeft[1] + (i * cellSize) + (gridLineSize * i) + sampleOffset);
-			const rgb = [
-				image.get(
-					x, 
-					y,
-					0
-				),
-				image.get(
-					x, 
-					y,
-					1
-				),
-				image.get(
-					x, 
-					y,
-					2
-				)
-			];
-			cells.push(rgb);
+			const coords = [];
+			if (verticalSplitCells) {
+				const halfCell = cellWidth / 2;
+				const x = 
+					Math.round(topLeft[0] + (j * cellWidth) + (xGridLineSize * j) + sampleOffset + halfCell);
+				const y = 
+					Math.round(topLeft[1] + (i * cellHeight) + (yGridLineSize * i) + sampleOffset);
+				coords.push([x, y]);
+			}
+			coords.push([
+				Math.round(topLeft[0] + (j * cellWidth) + (xGridLineSize * j) + sampleOffset), 
+				Math.round(topLeft[1] + (i * cellHeight) + (yGridLineSize * i) + sampleOffset),
+			]);
+
+			const colors = coords.map(([x, y]) => {
+				return [
+					image.get(
+						x, 
+						y,
+						0
+					),
+					image.get(
+						x, 
+						y,
+						1
+					),
+					image.get(
+						x, 
+						y,
+						2
+					)
+				];
+			});
+			if (areColorsEquivalent(colors[0], colors[1])) {
+				cells.push([colors[0]]);
+			} else {
+				cells.push(colors);
+			}
+			
 		}
 	}
 	return cells;
 }
 
 async function processRangeImages(imagePaths, config) {
-	const {gridDimensions, colorDefinitions} = config;
-	const images = await Promise.all(imagePaths.map(readImagePixels));
+	const {
+		gridDimensions, 
+		colorDefinitions,
+		useSuitsForPartialCombos,
+	} = config;
+	let images = await Promise.all(imagePaths.map(readImagePixels));
 	const rangeStringsMap = {};
-
 	for (let i = 0; i < images.length; i++) {
 		const path = imagePaths[i];
 		const image = images[i];
@@ -98,27 +133,30 @@ async function processRangeImages(imagePaths, config) {
 		// raise/call to color weights
 		const rangeLegends = Object.entries(legendMap);
 		for (const [action, colorWeights] of rangeLegends) {
-			const {rangeFlags,suits} = cellColors.reduce((acc, color, index) => {
+			const {rangeFlagMap, suits} = cellColors.reduce((acc, colors, index) => {
 				const colorWeight = colorWeights.find((colorWeight) => {
-					return doesCellMatchLegend(color, colorWeight.color, colorDefinitions);
+					return colors.find((color) => {
+						return doesCellMatchLegend(color, colorWeight.color, colorDefinitions);
+					}) !== undefined;
 				});
+				const weight = (colorWeight?.weight ?? 0) / colors.length;
+
 				if (!colorWeight) {
 					return acc;
-				} else if (colorWeight.weight === 1) {
-					acc.rangeFlags[index] = 1;
-				} else {
+				} else if (useSuitsForPartialCombos) {
 					// we assume that partial weights are .5 for now
 					// todo: allow for weights other than .5?
-					acc.rangeFlags[index] = 1;
 					acc.suits[index] = getHalfWeightSuitsForAction(index, action);
 				}
+				acc.rangeFlagMap[weight] = acc.rangeFlagMap[weight] ?? [];
+				acc.rangeFlagMap[weight][index] = 1;
 				return acc;
 			}, {
-				rangeFlags: [],
+				rangeFlagMap: {},
 				suits: [],
 			});
-			if (rangeFlags.length > 1) {
-				const rangeString = getRangeString(rangeFlags, suits);
+			if (Object.entries(rangeFlagMap).length > 0) {
+				const rangeString = getRangeString(rangeFlagMap, suits);
 				rangeStringsMap[path + '_' + action] = rangeString;
 			}
 		}

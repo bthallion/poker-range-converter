@@ -1,9 +1,11 @@
 {
 	"srcDir": "C:\\Users\\bthal\\poker\\redchip_ranges\\9max",
 	"gridDimensions": {
-		"gridSize": 470,
-		"topLeft": [42, 18],
-		"cellSize": 35,
+		"gridHeight": 470,
+		"gridWidth": 470,
+		"topLeft": [42, 18],	
+		"cellHeight": 35,
+		"cellWidth": 35,
 		"sampleOffset": 5
 	},
 	"colorDefinitions": [
@@ -11,7 +13,7 @@
 		[[251, 209, 73], "yellow"],
 		[[102, 153, 204], "blue"]
 	],
-	"useSuitsForPartialCombos": true,
+	"useSuitsForPartialCombos": false,
 	"filePatterns": {
 		"live-rfi": {
 			"raise": [

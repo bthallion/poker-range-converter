@@ -57,6 +57,7 @@ function outputRangesToClipboard(rangeList, topCategoryFilter = '') {
             + '\n' + `{${range}}` + '\n\n';
     }
     clipboardy.writeSync(output);
+    console.log(output);
 }
 
 /**

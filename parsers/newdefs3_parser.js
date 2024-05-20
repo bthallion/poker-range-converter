@@ -57,6 +57,7 @@ function buildRangeList(flatRanges) {
 		let rangePieces = range.split(' ');
 		const firstPiece = rangePieces.shift();
 		rangePieces.unshift(firstPiece[firstPiece.length - 1]);
+		rangePieces.pop();
 		range = rangePieces
 			.join(' ')
 			.replace(/(\S)(\S)/g, '$1@@@@bentoken@@@@$2')

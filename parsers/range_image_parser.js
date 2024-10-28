@@ -4,12 +4,15 @@
 import {loadJsonFile} from 'load-json-file';
 import {getHalfWeightSuitsForAction, getRangeString} from '../utils/range_string_utils.js';
 import getPixels from 'get-pixels';
+import savePixels from 'save-pixels';
 import * as fs from 'fs/promises';
+import {createWriteStream} from 'fs'
 import * as path from 'path';
 
-export async function parseRangeImages(configPath) {
+export async function parseRangeImages(configPath, debug) {
 	const config = await loadJsonFile(configPath);
 	const imagePaths = await readImageFilePaths(config.srcDir);
+	config.debug = debug;
 	return processRangeImages(imagePaths, config);
 }
 
@@ -36,6 +39,14 @@ function readImagePixels(imagePath) {
 	});
 }
 
+async function saveImage(ndArray, fileName) {
+	const outputPath = path.join('debug_output', fileName);
+	const fileStream = createWriteStream(outputPath);
+	return new Promise((resolve) => {
+		savePixels(ndArray, 'png').pipe(fileStream).on('finish', resolve);
+	});
+}
+
 /**
  * Tolerate a deviation of 40 points from the legend color
  */
@@ -51,14 +62,15 @@ function areColorsEquivalent(colorA, colorB) {
 	return rDiff <= 40 && gDiff <= 40 && bDiff <= 40;
 }
 
-function getCellColors(image, config) {
+async function getCellColors(image, config, name) {
 	const {
 		topLeft, 
 		cellWidth,
 		cellHeight, 
 		gridWidth,
 		gridHeight, 
-		sampleOffset
+		sampleOffsetX,
+		sampleOffsetY
 	} = config.gridDimensions;
 	const {verticalSplitCells} = config;
 	const xGridLineSize = (gridWidth - (cellWidth * 13)) / 12;
@@ -70,18 +82,18 @@ function getCellColors(image, config) {
 			if (verticalSplitCells) {
 				const halfCell = cellWidth / 2;
 				const x = 
-					Math.round(topLeft[0] + (j * cellWidth) + (xGridLineSize * j) + sampleOffset + halfCell);
+					Math.round(topLeft[0] + (j * cellWidth) + (xGridLineSize * j) + sampleOffsetX + halfCell);
 				const y = 
-					Math.round(topLeft[1] + (i * cellHeight) + (yGridLineSize * i) + sampleOffset);
+					Math.round(topLeft[1] + (i * cellHeight) + (yGridLineSize * i) + sampleOffsetY);
 				coords.push([x, y]);
 			}
 			coords.push([
-				Math.round(topLeft[0] + (j * cellWidth) + (xGridLineSize * j) + sampleOffset), 
-				Math.round(topLeft[1] + (i * cellHeight) + (yGridLineSize * i) + sampleOffset),
+				Math.round(topLeft[0] + (j * cellWidth) + (xGridLineSize * j) + sampleOffsetX), 
+				Math.round(topLeft[1] + (i * cellHeight) + (yGridLineSize * i) + sampleOffsetY),
 			]);
 
 			const colors = coords.map(([x, y]) => {
-				return [
+				const color = [
 					image.get(
 						x, 
 						y,
@@ -98,8 +110,18 @@ function getCellColors(image, config) {
 						2
 					)
 				];
+				if (config.debug) {
+					image.set(x, y, 0, 255);
+					image.set(x, y, 1, 255);
+					image.set(x, y, 2, 255);
+				}
+				return color;
 			});
-			if (areColorsEquivalent(colors[0], colors[1])) {
+			// Save image for debugging
+			if (config.debug) {
+				await saveImage(image, name);
+			}
+			if (colors.length === 1 || areColorsEquivalent(colors[0], colors[1])) {
 				cells.push([colors[0]]);
 			} else {
 				cells.push(colors);
@@ -115,21 +137,27 @@ async function processRangeImages(imagePaths, config) {
 		gridDimensions, 
 		colorDefinitions,
 		useSuitsForPartialCombos,
+		debug,
 	} = config;
 	let images = await Promise.all(imagePaths.map(readImagePixels));
+	if (debug) {
+		await fs.rm('debug_output', {recursive: true, force: true});
+    	await fs.mkdir('debug_output');
+	}
 	const rangeStringsMap = {};
 	for (let i = 0; i < images.length; i++) {
-		const path = imagePaths[i];
+		const imagePath = imagePaths[i];
 		const image = images[i];
 		const [fileNameSubstring, legendMap] = Object.entries(config.filePatterns)
 			.find(([fileNameSubstring]) => {
-				return path.includes(fileNameSubstring);
+				return imagePath.includes(fileNameSubstring);
 			}) ?? [];
 		if (!legendMap) {
-			throw new Error('No legends match this file: ' + path);
+			throw new Error('No legends match this file: ' + imagePath);
 		}
 
-		const cellColors = getCellColors(image, config);
+		const cellColors = await getCellColors(image, config, path.basename(imagePath));
+
 		// raise/call to color weights
 		const rangeLegends = Object.entries(legendMap);
 		for (const [action, colorWeights] of rangeLegends) {
@@ -157,7 +185,7 @@ async function processRangeImages(imagePaths, config) {
 			});
 			if (Object.entries(rangeFlagMap).length > 0) {
 				const rangeString = getRangeString(rangeFlagMap, suits);
-				rangeStringsMap[path + '_' + action] = rangeString;
+				rangeStringsMap[imagePath + '_' + action] = rangeString;
 			}
 		}
 	}

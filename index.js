@@ -16,6 +16,11 @@ import {parseNewDefs3} from './parsers/newdefs3_parser.js';
 import {parseRangeImages} from './parsers/range_image_parser.js';
 import * as path from 'path';
 
+process.on('uncaughtException', function (err) {
+  console.error(err.stack);
+  throw err;
+});
+
 async function readFile(filePath) {
   try {
     return fs.readFile(filePath, { encoding: 'binary' });
@@ -85,9 +90,9 @@ async function getNewDefs3Ranges(src) {
     return parseNewDefs3(rawText);
 }
 
-async function getImagesRanges(src) {
+async function getImagesRanges(src, debug) {
     const configSrc = src ?? defaultImageConfigPath;
-    return parseRangeImages(configSrc);
+    return parseRangeImages(configSrc, debug);
 }
 
 (async function main() {
@@ -97,6 +102,7 @@ async function getImagesRanges(src) {
         to,
         src,
         category,
+        debug,
     } = args;
 
     let rangeList;
@@ -109,7 +115,7 @@ async function getImagesRanges(src) {
             rangeList = await getNewDefs3Ranges(src);
             break;
         case 'images':
-            rangeList = await getImagesRanges(src);
+            rangeList = await getImagesRanges(src, debug);
             break;
         default:
             throw new Error('No `from` range format argument was provided.'); 

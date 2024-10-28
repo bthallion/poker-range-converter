@@ -6,7 +6,8 @@
 		"topLeft": [42, 18],	
 		"cellHeight": 35,
 		"cellWidth": 35,
-		"sampleOffset": 5
+		"sampleOffsetX": 5,
+		"sampleOffsetY": 5
 	},
 	"colorDefinitions": [
 		[[215, 53, 51], "red"],

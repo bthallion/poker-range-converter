@@ -21,6 +21,7 @@
     "clipboardy": "^4.0.0",
     "get-pixels": "^3.3.3",
     "load-json-file": "^7.0.1",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "save-pixels": "^2.3.6"
   }
 }

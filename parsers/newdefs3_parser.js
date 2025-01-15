@@ -1,3 +1,4 @@
+/** WIP */
 import * as fs from 'fs/promises';
 import {hands, handGroups, suitCombos, sameSuits, rangeStringOrderedGroups} from '../constants.js';
 import clipboardy from 'clipboardy';

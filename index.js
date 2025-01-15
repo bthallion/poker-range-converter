@@ -14,6 +14,7 @@ import minimist from 'minimist';
 import {parseNewDefs2} from './parsers/newdefs2_parser.js';
 import {parseNewDefs3} from './parsers/newdefs3_parser.js';
 import {parseRangeImages} from './parsers/range_image_parser.js';
+import {parseDirectory} from './parsers/directory_parser.js';
 import * as path from 'path';
 
 process.on('uncaughtException', function (err) {
@@ -52,6 +53,7 @@ ex:
 function outputRangesToClipboard(rangeList, topCategoryFilter = '') {
     let output = '';
     const filteredRangeList = rangeList.filter((range) => range[0].includes(topCategoryFilter));
+    console.log(JSON.stringify(filteredRangeList, null, 3));
     for (let i = 0; i < filteredRangeList.length; i++) {
         const rangeAndPath = filteredRangeList[i];
         const length = rangeAndPath.length;
@@ -90,9 +92,13 @@ async function getNewDefs3Ranges(src) {
     return parseNewDefs3(rawText);
 }
 
-async function getImagesRanges(src, debug) {
+function getImagesRanges(src, debug) {
     const configSrc = src ?? defaultImageConfigPath;
     return parseRangeImages(configSrc, debug);
+}
+
+function getDirectoryRanges(src) {
+    return parseDirectory(src);
 }
 
 (async function main() {
@@ -117,12 +123,15 @@ async function getImagesRanges(src, debug) {
         case 'images':
             rangeList = await getImagesRanges(src, debug);
             break;
+        case 'directory':
+            rangeList = await getDirectoryRanges(src);
+            break;
         default:
             throw new Error('No `from` range format argument was provided.'); 
     }
 
     switch (to) {
-        case 'files':
+        case 'directory':
             outputRangesToDir(rangeList);
             break;
         case 'clipboard':
